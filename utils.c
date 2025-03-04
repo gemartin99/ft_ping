@@ -1,23 +1,5 @@
 #include "ft_ping.h"
 
-void	*ft_memset(void *b, int c, size_t len)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < len)
-	{
-		((unsigned char *)b)[i] = (unsigned char)c;
-		i++;
-	}
-	return (b);
-}
-
-void	ft_bzero(void *s, size_t n)
-{
-	ft_memset(s, 0, n);
-}
-
 void ft_exit(t_ping *data)
 {
     if (data)
@@ -47,5 +29,17 @@ void print_help(t_ping *data)
     if (data)
         free(data);
 
+    exit(0);
+}
+
+void handle_sigint(int sig)
+{
+    (void)sig;
+    printf("\n--- Ping statistics ---\n");
+    /*printf("%d packets transmitted, %d received, %.1f%% packet loss\n",
+           data->packets_sent, data->packets_received,
+           ((data->packets_sent - data->packets_received) / (double)data->packets_sent) * 100);
+    */close(sock);
+    //free(data);
     exit(0);
 }

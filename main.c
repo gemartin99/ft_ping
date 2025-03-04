@@ -1,18 +1,7 @@
-/*typedef struct s_ping
-{
-    char *ip;
-    bool verbose; //-v
-    bool flood; //-f
-    int preload; //-l <num> numero de paketes a enviar antes de recibir respuesta
-    bool numeric; // -n
-    bool ip_timestamp; // --ip-timestamp
-    bool bypass_routing; //-r
-    bool help; //-h
-
-} t_ping
-*/
-
 #include "ft_ping.h"
+
+int sock;
+int check_sigint;
 
 int valid_ip(char *ip)
 {
@@ -79,13 +68,12 @@ void parse(int argc, char **argv, t_ping *data)
     }
 }
 
-
 t_ping *init_struct()
 {
     t_ping *data = (t_ping *)malloc(sizeof(t_ping));
     if (!data)
         ft_exit(NULL);
-    ft_bzero(data, sizeof(*data));
+    bzero(data, sizeof(*data));
     data->ip = NULL;
     data->verbose = false;
     data->flood = false;
@@ -99,6 +87,15 @@ t_ping *init_struct()
 
 int main(int argc, char **argv)
 {
+    if (argc == 1)
+    {
+        fprintf(stderr, "%s: usage error: Destination address required\n", argv[0]);
+        return(1);
+    }
+    signal(SIGINT, handle_sigint);
     t_ping *data = init_struct();
     parse(argc, argv, data);
+    send_socket(data);
+    //recv_socket(data);
+    return (0);
 }
