@@ -55,10 +55,6 @@ void parse(int argc, char **argv, t_ping *data)
     {
         if (!strcmp("-?", argv[i]) || !strcmp("-h", argv[i]))
             print_help(data);
-        else if (!strcmp("-v", argv[i]))
-            data->verbose = true;
-        else if (!strcmp("-f", argv[i]))
-            data->flood = true;
         else if (!strcmp("-i", argv[i]))
         {
             if (i + 1 >= argc)
@@ -103,8 +99,6 @@ void parse(int argc, char **argv, t_ping *data)
                 ft_exit(data);
             }
         }
-        else if (!strcmp("-r", argv[i]))
-            data->bypass_routing = true;
         else if (!strcmp("-c", argv[i]))
         {
             if (i + 1 >= argc)
@@ -152,11 +146,8 @@ t_ping *init_struct()
         ft_exit(NULL);
     bzero(data, sizeof(*data));
     data->ip = NULL;
-    data->verbose = false;
-    data->flood = false;
     data->interval = 1;
     data->ttl = 64;
-    data->bypass_routing = false;
     data->help = false;
     data->num_packets = -1;
     return (data);

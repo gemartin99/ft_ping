@@ -2,7 +2,6 @@
 #include <errno.h>
 #include <netinet/ip_icmp.h>
 
-//CHATGPT , HACER UNA PROPIA CUANDO LO ENTIENDA.
 uint16_t checksum(void *b, int len) {
     uint16_t *buf = b;
     uint32_t sum = 0;
@@ -48,10 +47,9 @@ void send_socket(t_ping *data)
     packet.type = ICMP_ECHO;
     packet.id = getpid();
 
-    char dest_ip_str[INET_ADDRSTRLEN];  // Para almacenar la IP en formato string
+    char dest_ip_str[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &dest.sin_addr, dest_ip_str, sizeof(dest_ip_str));
     printf("PING %s (%s)\n", dest_ip_str, dest_ip_str);
-
     while (check_sigint == 0)
     {
         if (data->num_packets != -1 && packet.seq >= data->num_packets)

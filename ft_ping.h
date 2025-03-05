@@ -30,12 +30,9 @@ struct icmp_hdr {
 typedef struct s_ping
 {
     char *ip;
-    bool verbose; //-v
-    bool flood; //-f
     long long int num_packets; //-c <num> numsero de paketes a enviar
     int interval; // -i
     int ttl; // modificar ttl
-    bool bypass_routing; //-r
     bool help; //-h
 } t_ping;
 
