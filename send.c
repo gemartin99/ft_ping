@@ -23,6 +23,8 @@ void send_socket(t_ping *data)
     int seq = 1;
     struct timeval start, end;
     char buffer[1024];
+    time_t now;
+    struct tm *local_time;
 
     sock = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP);
     if (sock < 0)
@@ -64,12 +66,21 @@ void send_socket(t_ping *data)
         reply_bytes = recvfrom(sock, buffer, sizeof(buffer), 0, NULL, NULL);
         if (reply_bytes > 0)
         {
+            if (data->time == true)
+            {
+                time(&now);
+                local_time = localtime(&now);
+                printf("[%02d:%02d:%02d] ", local_time->tm_hour, local_time->tm_min, local_time->tm_sec);
+            }
             gettimeofday(&end, NULL);
             packets_received++;
             double rtt = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;
-            printf("%d bytes from %s: icmp_seq=%d", reply_bytes, data->ip, packet.seq);
-            print_ttl_reply(buffer);
-            printf(" time=%.3f ms\n", rtt);
+            if (data->silent == false)
+            {
+                printf("%d bytes from %s: icmp_seq=%d", reply_bytes, data->ip, packet.seq);
+                print_ttl_reply(buffer);
+                printf(" time=%.3f ms\n", rtt);
+            }
         } 
         else
         {

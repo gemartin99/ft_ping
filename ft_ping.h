@@ -13,6 +13,7 @@
 #include <signal.h>
 #include <sys/time.h>
 #include <netinet/ip_icmp.h>
+#include <time.h>
 
 extern int sock;
 extern int check_sigint;
@@ -34,6 +35,8 @@ typedef struct s_ping
     int interval; // -i
     int ttl; // modificar ttl
     bool help; //-h
+    bool silent; //-s
+    bool time;
 } t_ping;
 
 void    ft_exit(t_ping *data);
