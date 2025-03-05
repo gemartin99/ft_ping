@@ -1,7 +1,10 @@
 #include "ft_ping.h"
 
 int sock;
+int packets_sent;
+int packets_received;
 int check_sigint;
+t_ping *data;
 
 int valid_ip(char *ip)
 {
@@ -38,14 +41,17 @@ void parse(int argc, char **argv, t_ping *data)
             data->ip_timestamp = true;
         else if (!strcmp("-r", argv[i]))
             data->bypass_routing = true;
-        else if (!strcmp("-l", argv[i]))
+        else if (!strcmp("-c", argv[i]))
         {
             if (i + 1 > argc)
             {
                 print_help(data);
             }
-            else if (atoi(argv[i + 1]) > 0 && atoi(argv[i + 1]) < 65536)
+            else if (atof(argv[i + 1]) > 0 && atof(argv[i + 1]) < 9223372036854775807)
+            {    
                 data->preload = atoi(argv[i + 1]);
+                i++;
+            }
             else if (atoi(argv[i + 1]) != 0)
             {
                 fprintf(stderr, "%s: invalid argument: '%s': out of range: 1 <= value <= 65536\n", argv[0], argv[i + 1]);
@@ -70,7 +76,7 @@ void parse(int argc, char **argv, t_ping *data)
 
 t_ping *init_struct()
 {
-    t_ping *data = (t_ping *)malloc(sizeof(t_ping));
+    data = (t_ping *)malloc(sizeof(t_ping));
     if (!data)
         ft_exit(NULL);
     bzero(data, sizeof(*data));
@@ -93,9 +99,8 @@ int main(int argc, char **argv)
         return(1);
     }
     signal(SIGINT, handle_sigint);
-    t_ping *data = init_struct();
+    data = init_struct();
     parse(argc, argv, data);
     send_socket(data);
-    //recv_socket(data);
-    return (0);
+    exit(0);
 }

@@ -35,11 +35,10 @@ void print_help(t_ping *data)
 void handle_sigint(int sig)
 {
     (void)sig;
+    double packet_loss = ((double)(packets_sent - packets_received) / packets_sent) * 100;
     printf("\n--- Ping statistics ---\n");
-    /*printf("%d packets transmitted, %d received, %.1f%% packet loss\n",
-           data->packets_sent, data->packets_received,
-           ((data->packets_sent - data->packets_received) / (double)data->packets_sent) * 100);
-    */close(sock);
+    printf("%d packets transmitted, %d received, %.1f%% packet loss\n", packets_sent, packets_received, packet_loss);
+    close(sock);
     //free(data);
-    exit(0);
+    exit(1);
 }

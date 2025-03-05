@@ -38,27 +38,21 @@ void send_socket(t_ping *data)
     inet_ntop(AF_INET, &dest.sin_addr, dest_ip_str, sizeof(dest_ip_str));
     printf("Sending packet to: %s\n", dest_ip_str);
 
-    while (check_sigint == 0)
+    while (check_sigint == 0 && packet.seq < data->preload)
     {
         packet.seq = seq++;
         packet.checksum = 0;
         packet.checksum = checksum(&packet, sizeof(packet));
 
-        printf("Sending packet:\n");
-        printf("Type: %d\n", packet.type);
-        printf("Code: %d\n", packet.code);
-        printf("ID: %d\n", packet.id);
-        printf("Seq: %d\n", packet.seq);
-        printf("Checksum: %d\n", packet.checksum);
-
         gettimeofday(&start, NULL);
         sendto(sock, &packet, sizeof(packet), 0, (struct sockaddr*)&dest, sizeof(dest));
+        packets_sent = packet.seq;
         if (recvfrom(sock, buffer, sizeof(buffer), 0, NULL, NULL) > 0)
         {
             gettimeofday(&end, NULL);
-            data->packets_received++;
+            packets_received++;
             double rtt = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;
-            printf("Reply from %s: seq=%d time=%.3f ms\n", data->ip, packet.seq, rtt);
+            printf("Reply from %s: icmp_seq=%d time=%.3f ms\n", data->ip, packet.seq, rtt);
         } 
         else
         {
@@ -68,4 +62,9 @@ void send_socket(t_ping *data)
         }
         sleep(1);
     }
+    double packet_loss = ((double)(packets_sent - packets_received) / packets_sent) * 100;
+    printf("\n--- Ping statistics ---\n");
+    printf("%d packets transmitted, %d received, %.1f%% packet loss\n", packets_sent, packets_received, packet_loss);
+    close(sock);
+    free(data);
 }

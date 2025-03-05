@@ -16,6 +16,8 @@
 
 extern int sock;
 extern int check_sigint;
+extern int packets_sent;
+extern int packets_received;
 
 // Definimos nuestra propia estructura ICMP
 struct icmp_hdr {
@@ -36,8 +38,6 @@ typedef struct s_ping
     bool ip_timestamp; // --ip-timestamp
     bool bypass_routing; //-r
     bool help; //-h
-    int packets_sent;
-    int packets_received;
 } t_ping;
 
 void    ft_exit(t_ping *data);
