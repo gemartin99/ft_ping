@@ -19,13 +19,12 @@ extern int check_sigint;
 extern int packets_sent;
 extern int packets_received;
 
-// Definimos nuestra propia estructura ICMP
 struct icmp_hdr {
     uint8_t type;        // Tipo de mensaje ICMP
-    uint8_t code;        // Código del mensaje
+    uint8_t code;        // Codigo del mensaje
     uint16_t checksum;   // Checksum
     uint16_t id;         // Identificador
-    uint16_t seq;        // Número de secuencia
+    uint16_t seq;        // Numero de secuencia
 };
 
 typedef struct s_ping
@@ -33,9 +32,9 @@ typedef struct s_ping
     char *ip;
     bool verbose; //-v
     bool flood; //-f
-    int preload; //-l <num> numero de paketes a enviar antes de recibir respuesta
-    bool numeric; // -n
-    bool ip_timestamp; // --ip-timestamp
+    long long int num_packets; //-c <num> numsero de paketes a enviar
+    int interval; // -i
+    int ttl; // modificar ttl
     bool bypass_routing; //-r
     bool help; //-h
 } t_ping;

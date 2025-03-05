@@ -21,8 +21,8 @@ void print_help(t_ping *data)
     printf("Usage: ft_ping [options] <host>\n");
     printf("  -v         Verbose mode\n");
     printf("  -h         Show help\n");
-    printf("  -f         Flood ping (send packets as fast as possible)\n");
-    printf("  -n         Do not resolve hostnames, show only IP addresses\n");
+    printf("  -ttl <num> Set TTL value for the packets\n");
+    printf("  -i <num>   Set the interval (in seconds) between each ping request\n");
     printf("  -l <num>   Number of packets to send before receiving a reply\n");
     printf("  -r         Bypass routing table, send directly to the interface\n");
 
@@ -39,6 +39,5 @@ void handle_sigint(int sig)
     printf("\n--- Ping statistics ---\n");
     printf("%d packets transmitted, %d received, %.1f%% packet loss\n", packets_sent, packets_received, packet_loss);
     close(sock);
-    //free(data);
     exit(1);
 }

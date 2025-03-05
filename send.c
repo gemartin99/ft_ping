@@ -12,8 +12,15 @@ uint16_t checksum(void *b, int len) {
     return ~sum;
 }
 
+void print_ttl_reply(char *buffer) {
+    struct ip *ip_header = (struct ip *)buffer;  // El header IP esta al principio del buffer
+    int ttl = ip_header->ip_ttl;  // TTL esta en el campo ip_ttl del header IP
+    printf(" ttl=%d", ttl);
+}
+
 void send_socket(t_ping *data)
 {   
+    int reply_bytes = 0;
     int seq = 1;
     struct timeval start, end;
     char buffer[1024];
@@ -24,6 +31,13 @@ void send_socket(t_ping *data)
         fprintf(stderr, "Failed to create RAW socket\n");
         ft_exit(data);
     }
+
+    if (setsockopt(sock, IPPROTO_IP, IP_TTL, &data->ttl, sizeof(data->ttl)) != 0)
+    {
+        fprintf(stderr, "Failed to set TTL\n");
+        ft_exit(data);
+    }
+
     struct sockaddr_in dest;
     memset(&dest, 0, sizeof(dest));
     dest.sin_family = AF_INET;
@@ -36,10 +50,12 @@ void send_socket(t_ping *data)
 
     char dest_ip_str[INET_ADDRSTRLEN];  // Para almacenar la IP en formato string
     inet_ntop(AF_INET, &dest.sin_addr, dest_ip_str, sizeof(dest_ip_str));
-    printf("Sending packet to: %s\n", dest_ip_str);
+    printf("PING %s (%s)\n", dest_ip_str, dest_ip_str);
 
-    while (check_sigint == 0 && packet.seq < data->preload)
+    while (check_sigint == 0)
     {
+        if (data->num_packets != -1 && packet.seq >= data->num_packets)
+            break;
         packet.seq = seq++;
         packet.checksum = 0;
         packet.checksum = checksum(&packet, sizeof(packet));
@@ -47,20 +63,23 @@ void send_socket(t_ping *data)
         gettimeofday(&start, NULL);
         sendto(sock, &packet, sizeof(packet), 0, (struct sockaddr*)&dest, sizeof(dest));
         packets_sent = packet.seq;
-        if (recvfrom(sock, buffer, sizeof(buffer), 0, NULL, NULL) > 0)
+        reply_bytes = recvfrom(sock, buffer, sizeof(buffer), 0, NULL, NULL);
+        if (reply_bytes > 0)
         {
             gettimeofday(&end, NULL);
             packets_received++;
             double rtt = (end.tv_sec - start.tv_sec) * 1000.0 + (end.tv_usec - start.tv_usec) / 1000.0;
-            printf("Reply from %s: icmp_seq=%d time=%.3f ms\n", data->ip, packet.seq, rtt);
+            printf("%d bytes from %s: icmp_seq=%d", reply_bytes, data->ip, packet.seq);
+            print_ttl_reply(buffer);
+            printf(" time=%.3f ms\n", rtt);
         } 
         else
         {
-            perror("recvfrom failed");
-            printf("Error: %s\n", strerror(errno));
-            printf("Request timed out\n");
+            fprintf(stderr, "Request timed out\n");
         }
-        sleep(1);
+        if (data->num_packets != -1 && packet.seq >= data->num_packets)
+            break;
+        sleep(data->interval);
     }
     double packet_loss = ((double)(packets_sent - packets_received) / packets_sent) * 100;
     printf("\n--- Ping statistics ---\n");
