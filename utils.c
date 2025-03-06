@@ -19,18 +19,19 @@ void ft_exit_error(t_ping *data, char *msg)
 void print_help(t_ping *data)
 {
     printf("Usage: ft_ping [options] <host>\n");
-    printf("  -v         Verbose mode\n");
     printf("  -h         Show help\n");
+    printf("  -s         No show reply outputs, only final stats\n");
     printf("  -ttl <num> Set TTL value for the packets\n");
     printf("  -i <num>   Set the interval (in seconds) between each ping request\n");
     printf("  -l <num>   Number of packets to send before receiving a reply\n");
-    printf("  -r         Bypass routing table, send directly to the interface\n");
+    printf("  -t         Show local time when receiving packets\n");
 
     if (data)
         free(data);
 
     exit(0);
 }
+
 
 void handle_sigint(int sig)
 {

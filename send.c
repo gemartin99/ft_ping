@@ -39,12 +39,12 @@ void send_socket(t_ping *data)
         ft_exit(data);
     }
 
-    struct sockaddr_in dest;
+    struct sockaddr_in dest; //strcut para guardar ip en formato bin
     memset(&dest, 0, sizeof(dest));
     dest.sin_family = AF_INET;
     inet_pton(AF_INET, data->ip, &dest.sin_addr);
 
-    struct icmp_hdr packet;
+    struct icmp_hdr packet; //struct informacion packete
     memset(&packet, 0, sizeof(packet));
     packet.type = ICMP_ECHO;
     packet.id = getpid();

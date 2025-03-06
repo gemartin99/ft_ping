@@ -35,8 +35,8 @@ typedef struct s_ping
     int interval; // -i
     int ttl; // modificar ttl
     bool help; //-h
-    bool silent; //-s
-    bool time;
+    bool silent; //-s no muestra outputs
+    bool time; // -t mostrar hora
 } t_ping;
 
 void    ft_exit(t_ping *data);
