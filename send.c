@@ -2,6 +2,7 @@
 #include <errno.h>
 #include <netinet/ip_icmp.h>
 
+
 uint16_t checksum(void *b, int len) {
     uint16_t *buf = b;
     uint32_t sum = 0;

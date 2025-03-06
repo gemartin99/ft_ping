@@ -48,6 +48,7 @@ int valid_hostname(char *hostname, t_ping *data)
     return 1; //si todo va bien
 }
 
+
 void parse(int argc, char **argv, t_ping *data)
 {
     int i = 1;

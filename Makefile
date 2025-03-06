@@ -29,27 +29,33 @@ CC = gcc
 RM = rm -f
 AR = ar rc
 RN = ranlib
-CFLAGS = -Wall -Wextra -Werror -static
+CFLAGS = -Wall -Wextra -Werror -MMD
 
 .c.o:
 			@echo "${BLUE} ◎ $(BROWN)Compiling   ${MAGENTA}→   $(CYAN)$< $(DEF_COLOR)"
 			@${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
 
 OBJS = ${SRCS:.c=.o}
+DEPS = $(addsuffix .d, $(basename $(SRCS)))
 
 all:	${NAME}
 
-${NAME}: ${OBJS}
-	@$(CC) $(CFLAGS) $(SRCS) -o $(NAME) -static
+-include $(DEPS)
+${NAME}: ${OBJS} Makefile
+	@$(CC) $(CFLAGS) $(SRCS) -o $(NAME)
 	@echo "$(GREEN)Created ${NAME} ✓$(DEF_COLOR)\n"
 
 clean:
-			@${RM} ${OBJS} output.txt
+			@${RM} ${OBJS}
+			@${RM} ${DEPS}
+			@rm -rf ft_ping.d
 			@echo "\n${BLUE} ◎ $(RED)All objects cleaned successfully ${BLUE}◎$(DEF_COLOR)\n"
 
 fclean:
 			@${RM} ${OBJS}
+			@${RM} ${DEPS}
 			@${RM} ${NAME}
+			@rm -rf ft_ping.d
 			@echo "\n${BLUE} ◎ $(RED)All objects and executable cleaned successfully${BLUE} ◎$(DEF_COLOR)\n"
 
 re: fclean all 
