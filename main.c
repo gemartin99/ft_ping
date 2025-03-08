@@ -56,6 +56,8 @@ void parse(int argc, char **argv, t_ping *data)
     {
         if (!strcmp("-?", argv[i]) || !strcmp("-h", argv[i]))
             print_help(data);
+        else if (!strcmp("-v", argv[i]))
+            data->verbose = true;
         else if (!strcmp("-s", argv[i]))
             data->silent = true;
         else if (!strcmp("-t", argv[i]))
@@ -157,6 +159,7 @@ t_ping *init_struct()
     data->num_packets = -1;
     data->silent = false;
     data->time = false;
+    data->verbose = false;
     return (data);
 }
 

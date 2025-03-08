@@ -23,7 +23,7 @@ void print_help(t_ping *data)
     printf("  -s         No show reply outputs, only final stats\n");
     printf("  -ttl <num> Set TTL value for the packets\n");
     printf("  -i <num>   Set the interval (in seconds) between each ping request\n");
-    printf("  -l <num>   Number of packets to send before receiving a reply\n");
+    printf("  -c <num>   Number of packets to send\n");
     printf("  -t         Show local time when receiving packets\n");
 
     if (data)

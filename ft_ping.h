@@ -26,6 +26,7 @@ struct icmp_hdr {
     uint16_t checksum;   // Checksum
     uint16_t id;         // Identificador
     uint16_t seq;        // Numero de secuencia
+    char data[36];   // Carga útil (puedes ajustar el tamaño según lo que necesites)
 };
 
 typedef struct s_ping
@@ -37,6 +38,7 @@ typedef struct s_ping
     bool help; //-h
     bool silent; //-s no muestra outputs
     bool time; // -t mostrar hora
+    bool verbose;
 } t_ping;
 
 void    ft_exit(t_ping *data);
