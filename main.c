@@ -4,6 +4,7 @@ int sock;
 int packets_sent;
 int packets_received;
 int check_sigint;
+bool _verbose;
 t_ping *data;
 
 int is_digits(char *s, t_ping *data)
@@ -57,7 +58,11 @@ void parse(int argc, char **argv, t_ping *data)
         if (!strcmp("-?", argv[i]) || !strcmp("-h", argv[i]))
             print_help(data);
         else if (!strcmp("-v", argv[i]))
+        {
             data->verbose = true;
+            _verbose = true;
+            printf("%s: sock4.fd: 3 (socktype: SOCK_RAW), hints.ai_family: AF_INET\n\n", argv[0]);
+        }
         else if (!strcmp("-s", argv[i]))
             data->silent = true;
         else if (!strcmp("-t", argv[i]))
@@ -160,6 +165,7 @@ t_ping *init_struct()
     data->silent = false;
     data->time = false;
     data->verbose = false;
+    _verbose = false;
     return (data);
 }
 

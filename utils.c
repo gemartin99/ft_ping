@@ -38,7 +38,12 @@ void handle_sigint(int sig)
     (void)sig;
     double packet_loss = ((double)(packets_sent - packets_received) / packets_sent) * 100;
     printf("\n--- Ping statistics ---\n");
-    printf("%d packets transmitted, %d received, %.1f%% packet loss\n", packets_sent, packets_received, packet_loss);
+    if (_verbose == false)
+        printf("%d packets transmitted, %d received, %.1f%% packet loss\n", packets_sent, packets_received,packet_loss);
+    if (packets_sent - packets_received > 0 && _verbose == true)
+        printf("%d packets transmitted, %d received, +%d errors, %.1f%% packet loss\n", packets_sent, packets_received, packets_sent - packets_received, packet_loss);
+    else if (packets_sent == packets_received && _verbose == true)
+        printf("%d packets transmitted, %d received, %.1f%% packet loss\n", packets_sent, packets_received, packet_loss);
     close(sock);
     exit(1);
 }

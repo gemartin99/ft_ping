@@ -41,7 +41,7 @@ void send_socket(t_ping *data)
         ft_exit(data);
     }
 
-    printf("TTL set to: %d\n", data->ttl);
+    //printf("TTL set to: %d\n", data->ttl);
 
     struct sockaddr_in dest; //strcut para guardar ip en formato bin
     memset(&dest, 0, sizeof(dest));
@@ -60,7 +60,7 @@ void send_socket(t_ping *data)
 
     char dest_ip_str[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &dest.sin_addr, dest_ip_str, sizeof(dest_ip_str));
-    printf("PING %s (%s)\n", dest_ip_str, dest_ip_str);
+    //printf("PING %s (%s)\n", dest_ip_str, dest_ip_str);
     while (check_sigint == 0)
     {
         if (data->num_packets != -1 && packet.seq >= data->num_packets)
@@ -79,9 +79,9 @@ void send_socket(t_ping *data)
             int ip_header_len = ip_header->ihl * 4;
 
             struct icmphdr *icmp_header = (struct icmphdr *)(buffer + ip_header_len);
-            if (data->verbose == true)
+            if (data->verbose == true && packet.seq < 2)
             {
-                printf("");
+                printf("ai->ai_family: AF_INET, ai->ai_canonname: %s\n", dest_ip_str);
             }  
             if (icmp_header->type == ICMP_TIME_EXCEEDED) //ttl se acaba
             {
@@ -120,7 +120,12 @@ void send_socket(t_ping *data)
     }
     double packet_loss = ((double)(packets_sent - packets_received) / packets_sent) * 100;
     printf("\n--- Ping statistics ---\n");
-    printf("%d packets transmitted, %d received, %.1f%% packet loss\n", packets_sent, packets_received, packet_loss);
+    if (data->verbose == false)
+        printf("%d packets transmitted, %d received, %.1f%% packet loss\n", packets_sent, packets_received,packet_loss);
+    if (packets_sent - packets_received > 0 && data->verbose == true)
+        printf("%d packets transmitted, %d received, +%d errors, %.1f%% packet loss\n", packets_sent, packets_received, packets_sent - packets_received, packet_loss);
+    else if (packets_sent == packets_received && data->verbose == true)
+        printf("%d packets transmitted, %d received, %.1f%% packet loss\n", packets_sent, packets_received, packet_loss);
     close(sock);
     free(data);
 }

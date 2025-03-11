@@ -19,6 +19,7 @@ extern int sock;
 extern int check_sigint;
 extern int packets_sent;
 extern int packets_received;
+extern bool _verbose;
 
 struct icmp_hdr {
     uint8_t type;        // Tipo de mensaje ICMP
